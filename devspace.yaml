@@ -1,0 +1,25 @@
+version: v2beta1
+# https://github.com/loft-sh/devspace/releases/tag/v6.0.1
+name: hello-app
+
+vars:
+  REGISTRY: localhost:5001
+  URL: 127.0.0.1.nip.io
+
+images:
+  hello-app:
+    image: ${REGISTRY}/hello-app:${DEVSPACE_GIT_COMMIT}
+    dockerfile: ./hello-app/Dockerfile
+    context: ./hello-app
+
+deployments:
+  hello-app:
+    helm:
+      chart:
+        name: charts/hello-app/
+      values:
+        image:
+          repository: ${REGISTRY}/hello-app:${DEVSPACE_GIT_COMMIT}
+        namespace: ${DEVSPACE_NAMESPACE}
+        url: ${URL}
+    namespace: ${DEVSPACE_NAMESPACE}
